@@ -1,0 +1,8 @@
+prefix=/home/sf/Desktop/multi-sensor-slam-tookit/timoo/devel
+
+Name: timoo_driver
+Description: Description of timoo_driver
+Version: 1.5.2
+Cflags: -I/home/sf/Desktop/multi-sensor-slam-tookit/timoo/devel/include -I/home/sf/Desktop/multi-sensor-slam-tookit/timoo/src/timoo_driver/include
+Libs: -L${prefix}/lib -ltimoo_input
+Requires: diagnostic_updater dynamic_reconfigure nodelet roscpp tf timoo_msgs

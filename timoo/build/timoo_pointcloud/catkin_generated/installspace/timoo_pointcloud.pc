@@ -1,0 +1,8 @@
+prefix=/home/sf/Desktop/multi-sensor-slam-tookit/timoo/install
+
+Name: timoo_pointcloud
+Description: Description of timoo_pointcloud
+Version: 1.5.2
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -ltimoo_rawdata
+Requires: angles nodelet roscpp roslib sensor_msgs tf timoo_driver timoo_msgs dynamic_reconfigure diagnostic_updater

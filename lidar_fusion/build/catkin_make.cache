@@ -1,0 +1,2 @@
+.
+-DCATKIN_DEVEL_PREFIX=/home/sf/Desktop/multi-sensor-slam-tookit/PointClouds_Fusion/lidar_fusion/devel -DCMAKE_INSTALL_PREFIX=/home/sf/Desktop/multi-sensor-slam-tookit/PointClouds_Fusion/lidar_fusion/install -G Unix Makefiles

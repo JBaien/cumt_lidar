@@ -1,0 +1,12 @@
+**/build
+**/devel
+**/install
+**/.catkin_tools
+**/logs
+**/.git
+**/.vscode
+**/.idea
+**/node_modules
+**/dist
+Calibration_Tookit
+docker/runtime/bags

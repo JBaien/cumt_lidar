@@ -1,0 +1,8 @@
+prefix=/home/sf/Desktop/multi-sensor-slam-tookit/timoo/install
+
+Name: timoo_laserscan
+Description: Description of timoo_laserscan
+Version: 1.5.2
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: sensor_msgs

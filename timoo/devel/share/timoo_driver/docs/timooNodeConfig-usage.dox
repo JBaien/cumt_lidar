@@ -1,0 +1,8 @@
+\subsubsection usage Usage
+\verbatim
+<node name="timoo_node" pkg="timoo_driver" type="timoo_node">
+  <param name="time_offset" type="double" value="0.0" />
+  <param name="enabled" type="bool" value="True" />
+</node>
+\endverbatim
+
