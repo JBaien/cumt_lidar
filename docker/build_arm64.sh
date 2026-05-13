@@ -9,8 +9,12 @@ OUTPUT="${OUTPUT:-mine-lidar-runtime-melodic-arm64.tar.gz}"
 PLATFORM="${PLATFORM:-linux/arm64}"
 BUILDER="${BUILDER:-default}"
 BUILDER_IMAGE="${BUILDER_IMAGE:-docker.1ms.run/moby/buildkit:buildx-stable-1}"
-PROXY="${PROXY:-http://192.168.146.1:7890}"
+PROXY="${PROXY:-http://127.0.0.1:7890}"
 NO_PROXY="${NO_PROXY:-localhost,127.0.0.1,::1}"
+NETWORK="${NETWORK:-host}"
+BINFMT_IMAGE="${BINFMT_IMAGE:-docker.1ms.run/tonistiigi/binfmt}"
+ENSURE_BINFMT="${ENSURE_BINFMT:-1}"
+CATKIN_MAKE_ARGS="${CATKIN_MAKE_ARGS:--j4 -l4}"
 
 DOCKER_REGISTRY="${DOCKER_REGISTRY:-docker.1ms.run}"
 NODE_IMAGE_TAG="${NODE_IMAGE_TAG:-20-bookworm}"
@@ -24,6 +28,10 @@ export http_proxy="${PROXY}"
 export https_proxy="${PROXY}"
 export NO_PROXY="${NO_PROXY}"
 export no_proxy="${no_proxy:-${NO_PROXY}}"
+
+if [ "${ENSURE_BINFMT}" != "0" ]; then
+  docker run --privileged --rm "${BINFMT_IMAGE}" --install arm64 >/dev/null
+fi
 
 if [ "${BUILDER}" = "default" ]; then
   docker buildx use default >/dev/null
@@ -44,6 +52,7 @@ fi
 
 docker buildx build \
   --platform "${PLATFORM}" \
+  --network "${NETWORK}" \
   -f "${SCRIPT_DIR}/Dockerfile.arm64" \
   -t "${IMAGE}" \
   --build-arg DOCKER_REGISTRY="${DOCKER_REGISTRY}" \
@@ -58,6 +67,7 @@ docker buildx build \
   --build-arg https_proxy="${https_proxy}" \
   --build-arg NO_PROXY="${NO_PROXY}" \
   --build-arg no_proxy="${no_proxy}" \
+  --build-arg CATKIN_MAKE_ARGS="${CATKIN_MAKE_ARGS}" \
   --load \
   "${ROOT_DIR}"
 
