@@ -64,6 +64,11 @@ export class PointCloudLayer {
     this.debug.source_topic = this.sourceTopic;
   }
 
+  setPointSize(size: number): void {
+    this.material.size = THREE.MathUtils.clamp(size, 0.005, 0.2);
+    this.material.needsUpdate = true;
+  }
+
   updateCloud(cloud: ParsedCloud, mode: ColorMode, reflectorVisible: boolean, layerVisible = this.visible): void {
     this.cloud = cloud;
     this.colors = new Float32Array(cloud.pointCount * 3);

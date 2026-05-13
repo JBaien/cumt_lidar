@@ -21,16 +21,45 @@ const status = ref<ViewerStatus | null>(null);
 const fps = ref(0);
 const frameMs = ref(0);
 const sceneDebug = ref<SceneDebug | null>(null);
+const menuOpen = ref(false);
+const pointSize = ref(0.035);
 
 let scene: SceneView | null = null;
 let cloudClient: BinaryCloudClient | null = null;
 let statusClient: StatusClient | null = null;
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  const element = target as HTMLElement | null;
+  if (!element) return false;
+  return (
+    element.isContentEditable ||
+    element.tagName === 'INPUT' ||
+    element.tagName === 'SELECT' ||
+    element.tagName === 'TEXTAREA'
+  );
+}
+
+function toggleFullscreen(): void {
+  if (document.fullscreenElement) {
+    void document.exitFullscreen();
+    return;
+  }
+  void document.documentElement.requestFullscreen?.();
+}
+
+function handleKeydown(event: KeyboardEvent): void {
+  if (event.code !== 'Space' || isTypingTarget(event.target)) return;
+  event.preventDefault();
+  toggleFullscreen();
+}
 
 onMounted(() => {
   if (!sceneEl.value) return;
   scene = new SceneView(sceneEl.value);
   scene.setLayers(layers.value);
   scene.setColorMode(colorMode.value);
+  scene.setPointSize(pointSize.value);
+  window.addEventListener('keydown', handleKeydown);
   scene.onStats((stats) => {
     fps.value = stats.fps;
     frameMs.value = stats.frameMs;
@@ -72,8 +101,10 @@ onMounted(() => {
 
 watch(colorMode, (mode) => scene?.setColorMode(mode));
 watch(layers, (nextLayers) => scene?.setLayers(nextLayers), { deep: true });
+watch(pointSize, (size) => scene?.setPointSize(size));
 
 onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown);
   cloudClient?.stop();
   statusClient?.stop();
   scene?.dispose();
@@ -83,7 +114,20 @@ onBeforeUnmount(() => {
 <template>
   <main class="app-shell">
     <div ref="sceneEl" class="scene-host"></div>
-    <aside class="side-panel">
+    <button
+      type="button"
+      class="menu-toggle"
+      :class="{ active: menuOpen }"
+      :aria-expanded="menuOpen"
+      aria-label="Toggle menu"
+      title="Menu"
+      @click="menuOpen = !menuOpen"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <aside class="side-panel" :class="{ open: menuOpen }">
       <header class="brand">
         <h1>Mine SLAM Viewer</h1>
         <p>{{ cloudUrl }}</p>
@@ -102,6 +146,14 @@ onBeforeUnmount(() => {
           <button type="button" @click="scene?.viewSide()">Side</button>
           <button type="button" @click="scene?.viewEnd()">End</button>
         </div>
+      </section>
+      <section class="panel-section">
+        <h2>Settings</h2>
+        <label class="range-row">
+          <span>Point size</span>
+          <strong>{{ pointSize.toFixed(3) }}</strong>
+          <input v-model.number="pointSize" type="range" min="0.005" max="0.12" step="0.005" />
+        </label>
       </section>
       <ColorModeSelector :mode="colorMode" @change="colorMode = $event" />
       <StatusPanel

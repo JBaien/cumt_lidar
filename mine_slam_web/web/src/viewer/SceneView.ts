@@ -139,6 +139,11 @@ export class SceneView {
     this.recolor();
   }
 
+  setPointSize(size: number): void {
+    this.currentLayer.setPointSize(size);
+    this.stableLayer.setPointSize(size);
+  }
+
   onStats(callback: (stats: RenderStats) => void): void {
     this.statsCallback = callback;
   }
