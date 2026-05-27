@@ -1,4 +1,4 @@
-5
+7
 /hesai/front_low
 0.0 0.0 -0.5 0.0 0.0 0.0
 /hesai/left_front
@@ -9,3 +9,7 @@
 1.0 5.0 0.0 1.7 0.0 0.0
 /hesai/right_rear
 -1.0 5.0 0.0 -1.4 0.0 0.0
+/right/velodyne_points
+0.296652 0.021154 -0.233077 3.076459 2.196367 3.104841
+/left/lslidar_point_cloud
+0.0 0.0 0.0 0.0 0.0 0.0

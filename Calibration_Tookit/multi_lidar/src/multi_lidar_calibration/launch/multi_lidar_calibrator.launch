@@ -1,6 +1,6 @@
 <launch>
-    <arg name="points_parent_src" default="/hesai/front_high" />
-    <arg name="points_child_src" default="/hesai/left_front" />
+    <arg name="points_parent_src" default="/velodyne_points" />
+    <arg name="points_child_src" default="/left/lslidar_point_cloud" />
     <arg name="init_params_file_path" default="$(find multi_lidar_calibrator)/cfg/child_topic_list"/>
     <arg name="voxel_size" default="0.1" />
     <arg name="ndt_epsilon" default="0.1" />
