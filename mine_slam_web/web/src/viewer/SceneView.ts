@@ -46,7 +46,7 @@ export class SceneView {
 
   constructor(private readonly host: HTMLElement) {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setClearColor(0x111412, 1);
+    this.renderer.setClearColor(0x2f3336, 1);
     this.host.appendChild(this.renderer.domElement);
 
     this.camera.up.set(0, 0, 1);
@@ -54,7 +54,7 @@ export class SceneView {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(10, 0, 0);
     this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.08;
+    this.controls.dampingFactor = 0.06;
     this.controls.enablePan = true;
     this.controls.enableRotate = true;
     this.controls.enableZoom = true;
@@ -63,9 +63,9 @@ export class SceneView {
     this.controls.maxDistance = 10000;
     this.controls.minPolarAngle = 0;
     this.controls.maxPolarAngle = Math.PI;
-    this.controls.rotateSpeed = 0.75;
-    this.controls.panSpeed = 0.9;
-    this.controls.zoomSpeed = 1.0;
+    this.controls.rotateSpeed = 0.82;
+    this.controls.panSpeed = 1.0;
+    this.controls.zoomSpeed = 1.12;
     this.controls.mouseButtons = {
       LEFT: THREE.MOUSE.ROTATE,
       MIDDLE: THREE.MOUSE.DOLLY,
@@ -79,7 +79,7 @@ export class SceneView {
       this.controls.zoomToCursor = true;
     }
 
-    this.grid = new THREE.GridHelper(120, 60, 0x365040, 0x243028);
+    this.grid = new THREE.GridHelper(120, 60, 0x6f777d, 0x454b50);
     this.grid.rotation.x = Math.PI / 2;
     this.scene.add(this.grid);
     this.scene.add(this.currentLayer.points);

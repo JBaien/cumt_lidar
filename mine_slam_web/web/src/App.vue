@@ -2,10 +2,9 @@
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import ColorModeSelector from './components/ColorModeSelector.vue';
 import LayerPanel from './components/LayerPanel.vue';
-import StatusPanel from './components/StatusPanel.vue';
 import type { ColorMode } from './viewer/ColorMap';
 import { BinaryCloudClient } from './viewer/BinaryCloudClient';
-import { SceneView, type LayerState, type SceneDebug } from './viewer/SceneView';
+import { SceneView, type LayerState } from './viewer/SceneView';
 import { StatusClient, type ViewerStatus } from './viewer/StatusClient';
 
 const host = window.location.hostname || 'localhost';
@@ -18,10 +17,7 @@ const layers = ref<LayerState>({ current: true, stable: true, path: true, reflec
 const cloudConnected = ref(false);
 const statusConnected = ref(false);
 const status = ref<ViewerStatus | null>(null);
-const fps = ref(0);
-const frameMs = ref(0);
-const sceneDebug = ref<SceneDebug | null>(null);
-const menuOpen = ref(false);
+const menuOpen = ref(true);
 const pointSize = ref(0.035);
 
 let scene: SceneView | null = null;
@@ -61,8 +57,6 @@ onMounted(() => {
   scene.setPointSize(pointSize.value);
   window.addEventListener('keydown', handleKeydown);
   scene.onStats((stats) => {
-    fps.value = stats.fps;
-    frameMs.value = stats.frameMs;
     window.__MINE_SLAM_VIEWER_STATS__ = {
       fps: stats.fps,
       frameMs: stats.frameMs,
@@ -72,7 +66,6 @@ onMounted(() => {
       cloudConnected: cloudConnected.value,
       statusConnected: statusConnected.value
     };
-    sceneDebug.value = scene?.getDebug() ?? null;
   });
 
   cloudClient = new BinaryCloudClient(
@@ -90,7 +83,6 @@ onMounted(() => {
       status.value = nextStatus;
       scene?.setSourceTopics(nextStatus.current_cloud_source_topic, nextStatus.stable_map_source_topic);
       scene?.updatePath(nextStatus.path, nextStatus.pose);
-      sceneDebug.value = scene?.getDebug() ?? null;
     },
     (connected) => {
       statusConnected.value = connected;
@@ -112,7 +104,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="app-shell">
+  <main class="app-shell" :class="{ 'menu-open': menuOpen }">
+    <header class="viewport-bar">
+      <span>Mine SLAM Cloud View</span>
+      <strong>{{ cloudConnected || statusConnected ? 'LIVE' : 'OFFLINE' }}</strong>
+    </header>
     <div ref="sceneEl" class="scene-host"></div>
     <button
       type="button"
@@ -128,42 +124,8 @@ onBeforeUnmount(() => {
       <span></span>
     </button>
     <aside class="side-panel" :class="{ open: menuOpen }">
-      <header class="brand">
-        <h1>Mine SLAM Viewer</h1>
-        <p>{{ cloudUrl }}</p>
-      </header>
       <LayerPanel :layers="layers" @change="layers = $event" />
-      <section class="panel-section">
-        <h2>Camera</h2>
-        <div class="button-row">
-          <button type="button" @click="scene?.fitStable()">Fit stable</button>
-          <button type="button" @click="scene?.fitCurrent()">Fit current</button>
-          <button type="button" @click="scene?.fitAll()">Fit all</button>
-        </div>
-        <div class="button-row camera-preset-row">
-          <button type="button" @click="scene?.viewIso()">Iso</button>
-          <button type="button" @click="scene?.viewTop()">Top</button>
-          <button type="button" @click="scene?.viewSide()">Side</button>
-          <button type="button" @click="scene?.viewEnd()">End</button>
-        </div>
-      </section>
-      <section class="panel-section">
-        <h2>Settings</h2>
-        <label class="range-row">
-          <span>Point size</span>
-          <strong>{{ pointSize.toFixed(3) }}</strong>
-          <input v-model.number="pointSize" type="range" min="0.005" max="0.12" step="0.005" />
-        </label>
-      </section>
       <ColorModeSelector :mode="colorMode" @change="colorMode = $event" />
-      <StatusPanel
-        :cloud-connected="cloudConnected"
-        :status-connected="statusConnected"
-        :status="status"
-        :fps="fps"
-        :frame-ms="frameMs"
-        :scene-debug="sceneDebug"
-      />
     </aside>
   </main>
 </template>
