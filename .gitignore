@@ -3,3 +3,5 @@
 UrbanNav-HK_CHTunnel-20210518_sensors.zip
 UrbanNav-HK_CHTunnel-20210518_sensors.bag
 Calibration_Tookit/SensorsCalibration/lidar2lidar/auto_calib/build/* 
+mine_slam_web/web/dist/
+mine_slam_web/web/node_modules/
